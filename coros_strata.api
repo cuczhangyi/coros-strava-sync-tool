@@ -1,0 +1,30 @@
+syntax = "v1"
+
+info(
+	title: // TODO: add title
+	desc: // TODO: add description
+	author: "Zhangyi"
+	email: "flywithyou_ren@126.com"
+)
+
+type stravaCallbackReq {
+	Error string `form:"error,optional"`
+	State string `form:"state,optional"`
+	Code  string `form:"code,optional"`
+}
+
+type stravaCallbackResp {
+}
+
+type request {
+	// TODO: add members here and delete this comment
+}
+
+type response {
+	// TODO: add members here and delete this comment
+}
+
+service coros_strata-api {
+	@handler StravaCallback
+	get /strava/callback(stravaCallbackReq) returns(stravaCallbackResp)
+}

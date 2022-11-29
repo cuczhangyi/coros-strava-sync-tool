@@ -1,0 +1,13 @@
+coros :
+  #download file save path 
+  file_save_path : "/app/fit_files/"
+  #coros user email
+  user_email: *********@123.com
+  #coros user password
+  password: ********
+
+cron_plan:
+  #cron plan for refresh strava token
+  refresh_token: "0 */30 * * * *"
+  #cron plan for upload coros fit -- one time per day 
+  upload_item: "0 5 1 * * *"

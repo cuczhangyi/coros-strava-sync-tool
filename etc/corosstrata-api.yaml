@@ -1,0 +1,13 @@
+Name: coros_strata-api
+Host: 0.0.0.0
+Port: 8018
+
+StravaInfo:
+  #strava client id
+  client_id: 00000 
+  #strava client secret
+  client_secret: "client_secret of strava"
+  #temp port not be used
+  strava_temp_port: 8811
+  #strava redirect uri, if not running on domain, please change it to http://localhost:8018/strava/callback
+  call_back_url: http://localhost:8018/strava/callback
