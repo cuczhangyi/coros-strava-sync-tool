@@ -15,11 +15,9 @@ import (
 	"github.com/tal-tech/go-zero/rest"
 )
 
-
 var configFile = flag.String("f", "etc/corosstrata-api.yaml", "the config file")
 var gfcfgFile = flag.String("gffile", "config.yaml", "the gf config file") //这行新增
-var gfcfgPath = flag.String("gfpath", "./etc", "the gf config file")//这行新增
-
+var gfcfgPath = flag.String("gfpath", "./etc", "the gf config file")       //这行新增
 
 func main() {
 	flag.Parse()
@@ -36,27 +34,21 @@ func main() {
 	handler.RegisterHandlers(server, ctx)
 
 	fmt.Printf("Starting server at %s:%d...\n", c.Host, c.Port)
-	
-	
+
 	url := utils.GetAuthUrl()
 	fmt.Printf("please visit url to get the code %s \n", url)
 	//utils.Upload("/Volumes/DATA/GoWorkSpace/src/github.com/cuczhangyi/coros-strava/test_fit_file");
 
-
 	refreshTokenCron := g.Cfg().GetString("cron_plan.refresh_token")
-	gcron.Add(refreshTokenCron,func() {
+	gcron.Add(refreshTokenCron, func() {
 		utils.RefreshStravaToken()
-	})	
-	
-	uploadCron := g.Cfg().GetString("cron_plan.upload_item")
-
-	gcron.Add(uploadCron,func() {
-		utils.UploadItem()
 	})
 
+	uploadCron := g.Cfg().GetString("cron_plan.upload_item")
 
-
-
+	gcron.Add(uploadCron, func() {
+		utils.GetCorosFileAndUpload()
+	})
 
 	server.Start()
 }
