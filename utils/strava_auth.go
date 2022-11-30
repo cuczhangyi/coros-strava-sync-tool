@@ -82,15 +82,19 @@ func RefreshStravaToken() error{
 	//   -d refresh_token=ReplaceWithRefreshToken
 	
 	if StravaTokenExpireAt == 0 || StravaRefreshToken == ""{
+		fmt.Println("RefreshStravaToken error no token")
 		return	gerror.New("no token")
 	}
-	checktime := gtime.NewFromTimeStamp(StravaTokenExpireAt).Add(-3 * time.Hour).Add(-1 * time.Minute)
+	checktime := gtime.NewFromTimeStamp(StravaTokenExpireAt).Add(-5 * time.Minute)
+	checkTimeStr := checktime.String()
+	fmt.Println("RefreshStravaToken checkTimeStr " +  checkTimeStr)
 	if !gtime.Now().After(checktime){
+		fmt.Println("RefreshStravaToken checkTime is error")
 		return nil
 	}
 
 	if gtime.Now ().After(gtime.NewFromTimeStamp(StravaTokenExpireAt)){
-		fmt.Printf("strava token expired , please restart this app and reauth")
+		fmt.Println("strava token expired , please restart this app and reauth")
 		return gerror.New("strava token expired , please restart this app and reauth")
 	}
 
@@ -120,5 +124,6 @@ func RefreshStravaToken() error{
 	StravaAccessToken  = AccessToken1
 	StravaRefreshToken = RefreshToken1
 	StravaTokenExpireAt = ExpireAt1
+	fmt.Println("strava token refresh success")
 	return nil
 }

@@ -8,6 +8,7 @@ coros :
 
 cron_plan:
   #cron plan for refresh strava token
-  refresh_token: "0 */30 * * * *"
+  refresh_token: "0 */8 * * * *"
+  #refresh_token: "* * * * * *"
   #cron plan for upload coros fit -- one time per day 
   upload_item: "0 5 1 * * *"

@@ -2,6 +2,7 @@ package logic
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/cuczhangyi/coros-strava/internal/svc"
 	"github.com/cuczhangyi/coros-strava/internal/types"
@@ -33,6 +34,7 @@ func (l *StravaCallbackLogic) StravaCallback(req types.StravaCallbackReq) (*type
 	// todo: add your logic here and delete this line
 	logx.Info("StravaCallbackLogic.StravaCallback")
 
+	fmt.Println("StravaCallbackLogic.StravaCallback")
 	if req.Error !=  "" {
 		return nil, strava.OAuthAuthorizationDeniedErr
 	}
@@ -42,6 +44,7 @@ func (l *StravaCallbackLogic) StravaCallback(req types.StravaCallbackReq) (*type
 		return nil, gerror.New("strava callbacl no code ")
 	}
 
+	fmt.Println("StravaCallbackLogic.StravaCallback code is " +  req.Code)
 	err:= utils.AuthGetTokenByCode(req.Code)
 	if err != nil {
 		logx.Errorf("AuthGetTokenByCode error: %v", err)
