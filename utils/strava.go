@@ -27,12 +27,12 @@ func UploadItem() {
 	}
 
 
-	if StravaAuthToken == "" {
+	if StravaAccessToken == "" {
 		logx.Errorf("StravaAuthToken is empty when upload item")
 		return
 	}
 
-	checktime := gtime.NewFromTimeStamp(ExpireAt)
+	checktime := gtime.NewFromTimeStamp(StravaTokenExpireAt)
 	if gtime.Now().After(checktime ){
 		logx.Errorf("StravaAuthToken is empty when upload item")
 		return
@@ -45,7 +45,7 @@ func UploadItem() {
 	}
 	
 	
-	uploader := newUploader(StravaAuthToken)
+	uploader := newUploader(StravaAccessToken)
 	files, err := ioutil.ReadDir(file_path)
 	if err != nil {
 		logx.Errorf("read dir error: %v", err)

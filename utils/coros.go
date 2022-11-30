@@ -12,6 +12,7 @@ import (
 	"github.com/gogf/gf/os/gfile"
 	"github.com/gogf/gf/os/gtime"
 	"github.com/gogf/gf/text/gstr"
+	"github.com/gogf/gf/util/gconv"
 	"github.com/gogf/gf/util/guid"
 )
 
@@ -152,7 +153,7 @@ func login(user_name, password string) (string, error) {
 }
 
 func getActivesByHttp(strartDate string, endDate string, token string, pageCurrent int64) ([]*DataList,int64,error){
-	url := corosURL + "/activity/query?size=50&pageNumber=%d&modeList=&beginDate=%s&endDate=%s"	
+	url := corosURL + "/activity/query?size=50&pageNumber=%d&modeList=&startDay=%s&endDay=%s"	
 	url = fmt.Sprintf(url,pageCurrent , strartDate ,endDate )
 	resp,err:= g.Client().SetHeader("accesstoken",token).Get(url)
 	if err != nil {
@@ -183,9 +184,10 @@ func getActivesByHttp(strartDate string, endDate string, token string, pageCurre
 	}
 
 	nextPage := pageCurrent
-	if retStruct.Data.Count > int(pageCurrent){
+	if pageCurrent < gconv.Int64(retStruct.Data.TotalPage) {
 		nextPage += 1
 	}
+
 	
 	return retStruct.Data.DataList,nextPage,nil
 }
@@ -194,15 +196,17 @@ func getActivesByHttp(strartDate string, endDate string, token string, pageCurre
 func getAllActives(strartDate string, endDate string, token string) ([]*DataList, error ){
 	// Get the activities
 	//https://teamcnapi.coros.com/activity/query?size=20&pageNumber=1&modeList=
-	beginDate,err := formatDate(strartDate)
-	if err != nil {
-		return nil, err
-	}
-	stopDate,err := formatDate(endDate)
-	if err != nil {
-		return nil, err
-	}
+	// beginDate,err := formatDate(strartDate)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	// stopDate,err := formatDate(endDate)
+	// if err != nil {
+	// 	return nil, err
+	// }
 	
+	beginDate := strartDate
+	stopDate := endDate	
 	
 	curPage := 1
 	allActives := make([]*DataList,0)
@@ -214,6 +218,9 @@ func getAllActives(strartDate string, endDate string, token string) ([]*DataList
 			errWhile = err
 			break
 		}
+
+		
+
 		allActives = append(allActives,data...)
 		if nextPage == int64(curPage){
 			break

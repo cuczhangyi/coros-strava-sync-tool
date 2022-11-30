@@ -17,13 +17,13 @@ import (
 // an http.HandlerFunc to handle the redirect from the remote host.
 
 
-var AccessToken string 
+var StravaAccessToken string 
 
-var RefreshToken string 
+var StravaRefreshToken string 
 
-var ExpireAt int64
+var StravaTokenExpireAt int64
 
-var  StravaAuthToken string
+
 
 const(
 	strava_base_url = "https://www.strava.com/api/v3"
@@ -61,11 +61,11 @@ func AuthGetTokenByCode(code string )  error{
 		return err 
 	}
 
-	AccessToken = jsonObj.GetString("access_token")
-	RefreshToken = jsonObj.GetString("refresh_token")
-	ExpireAt = jsonObj.GetInt64("expires_at")
+	StravaAccessToken = jsonObj.GetString("access_token")
+	StravaRefreshToken = jsonObj.GetString("refresh_token")
+	StravaTokenExpireAt = jsonObj.GetInt64("expires_at")
 
-	if AccessToken == "" || RefreshToken == "" || ExpireAt == 0{
+	if StravaAccessToken == "" || StravaRefreshToken == "" || StravaTokenExpireAt == 0{
 		logx.Errorf("AuthGetTokenByCode return error no token", )
 		return err 
 	}
@@ -81,20 +81,20 @@ func RefreshStravaToken() error{
 	//   -d grant_type=refresh_token \
 	//   -d refresh_token=ReplaceWithRefreshToken
 	
-	if ExpireAt == 0 || RefreshToken == ""{
+	if StravaTokenExpireAt == 0 || StravaRefreshToken == ""{
 		return	gerror.New("no token")
 	}
-	checktime := gtime.NewFromTimeStamp(ExpireAt).Add(-3 * time.Hour).Add(-1 * time.Minute)
+	checktime := gtime.NewFromTimeStamp(StravaTokenExpireAt).Add(-3 * time.Hour).Add(-1 * time.Minute)
 	if !gtime.Now().After(checktime){
 		return nil
 	}
 
-	if gtime.Now ().After(gtime.NewFromTimeStamp(ExpireAt)){
+	if gtime.Now ().After(gtime.NewFromTimeStamp(StravaTokenExpireAt)){
 		fmt.Printf("strava token expired , please restart this app and reauth")
 		return gerror.New("strava token expired , please restart this app and reauth")
 	}
 
-	url := fmt.Sprintf("https://www.strava.com/api/v3/oauth/token?client_id=%d&client_secret=%s&grant_type=refresh_token&refresh_token=%s", svc.SCtx.Config.StravaInfo.ClientId, svc.SCtx.Config.StravaInfo.ClientSecret, RefreshToken)
+	url := fmt.Sprintf("https://www.strava.com/api/v3/oauth/token?client_id=%d&client_secret=%s&grant_type=refresh_token&refresh_token=%s", svc.SCtx.Config.StravaInfo.ClientId, svc.SCtx.Config.StravaInfo.ClientSecret, StravaRefreshToken)
 
 	resp,err:= g.Client().Post(url)
 	if err != nil{
@@ -117,8 +117,8 @@ func RefreshStravaToken() error{
 		logx.Errorf("AuthGetTokenByCode return error no token", )
 		return err 
 	}
-	AccessToken  = AccessToken1
-	RefreshToken = RefreshToken1
-	ExpireAt = ExpireAt1
+	StravaAccessToken  = AccessToken1
+	StravaRefreshToken = RefreshToken1
+	StravaTokenExpireAt = ExpireAt1
 	return nil
 }
